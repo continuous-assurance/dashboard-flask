@@ -1,0 +1,221 @@
+/* Global Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #f4f7fa;
+    color: #333;
+    font-size: 16px;
+}
+
+/* Main Container */
+.app-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 30px;
+    height: 100vh;
+    flex-wrap: wrap;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 280px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    position: sticky;
+    top: 30px;
+    height: calc(100vh - 60px); /* Ensure it doesn't overlap header */
+}
+
+.sidebar-header {
+    font-size: 1.6em;
+    color: #444;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.filters-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-label {
+    font-size: 1.1em;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+.dropdown {
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-size: 1em;
+}
+
+/* Main Content */
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: calc(100% - 320px); /* Adjust width to account for sidebar */
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 20px 40px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.header-title {
+    font-size: 2.5em;
+    color: #444;
+    margin: 0;
+    font-weight: 600;
+}
+
+.header-description {
+    font-size: 1.1em;
+    color: #777;
+    margin: 0;
+}
+
+/* Graph Container for Overview and Sub-Graphs */
+.graph-container {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    gap: 20px; /* Add space between the overview graph and the sub-graphs */
+    width: 100%;
+}
+
+/* Sub-Graphs Layout (Two Graphs Side by Side) */
+.sub-graphs-container {
+    display: flex;
+    flex-direction: row; /* Align the two graphs side by side */
+    justify-content: space-between; /* Evenly space the two graphs */
+    gap: 20px; /* Space between the two graphs */
+    width: 100%;
+}
+
+/* Individual Graph Styles */
+.graph {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #ffffff;
+    padding: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Overview Graph (Full-Width) */
+.overview-graph {
+    width: 100%; /* Ensure it spans the full width */
+    height: 400px; /* Set consistent height */
+}
+
+/* Sub-Graphs (Each Takes Equal Space) */
+.sub-graph {
+    flex: 1; /* Equal space for both graphs */
+    height: 300px; /* Slightly shorter height than the overview graph */
+}
+
+/* Header Spanning Full Width */
+.header {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 10; /* Ensure it stays on top */
+}
+
+.sidebar {
+    position: sticky;
+    top: 100px; /* Keep filters fixed below header */
+}
+
+/* Responsive Styles */
+@media (max-width: 900px) {
+    .app-container {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .sidebar {
+        width: 100%;
+        margin-bottom: 20px;
+        position: static;
+        height: auto;
+    }
+
+    .main-content {
+        width: 100%;
+    }
+
+    .header-title {
+        font-size: 2em;
+    }
+
+    .graph {
+        width: 100%; /* Make the graph take full width on smaller screens */
+    }
+
+    .sub-graphs-container {
+        flex-direction: column; /* Stack the graphs vertically */
+    }
+
+    .sub-graph {
+        width: 100%; /* Full width for stacked graphs */
+    }
+}
+
+/* Table Container - Matching the style of graph containers */
+.table-container {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Adding shadow to match graphs */
+    margin-bottom: 20px; /* Space between other content */
+}
+
+/* Dash Table Specific Styling */
+.dash-table-container {
+    background-color: #ffffff;  /* Same background as other elements */
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Matching box-shadow */
+}
+
+.dash-table-container .dash-spreadsheet {
+    font-size: 14px; /* Ensure table font size matches */
+}
+
+/* Table Height */
+.dash-table-container .dash-spreadsheet-container {
+    height: 300px; /* Match the height of the graphs */
+    overflow-y: auto; /* Add scroll if necessary */
+}
+
+/* Optional: Make table responsive like graphs */
+@media (max-width: 900px) {
+    .dash-table-container .dash-spreadsheet {
+        width: 100%; /* Ensure it fits within smaller screens */
+    }
+}
+

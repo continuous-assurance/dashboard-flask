@@ -1,0 +1,9 @@
+dimensions:   # specify the dimension field name (used in the csv file) and the label to show on the dashboard
+  business_unit: Business Unit
+  team: Team
+  location: Location
+tokens:     # an array of bearer tokens that are acceptable for use by the producer.  CHANGE THESE BEFORE YOU GO LIVE
+  - 6002920168C3253430A653E16AD36EE88F6E3C7D917A5F245F735D96ABDA67FE
+data:
+  detail: ../data/detail.parquet
+  summary: ../data/summary.parquet
