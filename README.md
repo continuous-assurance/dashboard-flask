@@ -19,7 +19,7 @@ The app is built on Python 3.13.  Make sure you are running at least 3.x.  Some 
 
 **Run the app**
 
-* `flask run --port 8080`
+* `python app.py`
 
 **Open the app**
 

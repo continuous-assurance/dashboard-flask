@@ -2,6 +2,7 @@ from dash import Dash, html, dcc, Input, Output, dash_table
 import pandas as pd
 import plotly.express as px
 import yaml
+import os
 
 with open("config.yml", "r") as f:
     config = yaml.safe_load(f)
@@ -14,6 +15,23 @@ RAG = {
     'amber': ['#FFC107', '#FFFFFF'],
     'green': ['#4CAF50', '#000000'],
 }
+
+if not os.path.exists(config['data']['summary']):
+    initial_data = pd.DataFrame({
+        "datestamp": pd.Series(dtype="datetime64[ns]"),
+        "metric_id": pd.Series(dtype="str"),
+        "total": pd.Series(dtype="float64"),
+        "totalok": pd.Series(dtype="float64"),
+        "slo": pd.Series(dtype="float64"),
+        "slo_min": pd.Series(dtype="float64"),
+        "weight": pd.Series(dtype="float64"),
+        "title": pd.Series(dtype="str"),
+        "category": pd.Series(dtype="str")
+    })
+    for d in config['dimensions']:
+        initial_data[d] = pd.Series(dtype="str")
+
+    initial_data.to_parquet(config['data']['summary'], index=False)
 
 # Function to load the dataset
 def load_summary():
