@@ -7,3 +7,8 @@ tokens:     # an array of bearer tokens that are acceptable for use by the produ
 data:
   detail: ../data/detail.parquet
   summary: ../data/summary.parquet
+# -- tweak the RAG colour scheme here if you like.
+RAG:
+  red:   ['#C00000', '#000000'] #FF6F61
+  amber: ['#FFC000', '#FFFFFF'] #FFC107
+  green: ['#00B050', '#000000'] #4CAF50

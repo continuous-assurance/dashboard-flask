@@ -139,3 +139,17 @@ TODO
 * The `compliance` field is a float, a percentage of compliance if you will.  That means that when you decide compliance for a particular resource, you could infact define _partial_ compliance.
 * To backup and restore, simply grab the `data` folder, and store that safely.  Upon recovery, install a fresh copy of the application, and restore the `data` folder.  Any customisation you may have made to the `config.yml` file also needs to be restored.
 
+### AWS EC2 Instance
+
+You can run the code on an AWS EC2 instance.  Deploy an `Amazon Linux 2023` instance.  Using the following UserData code will spawn a fresh server.
+
+```bash
+#!/bin/sh
+sudo yum install -y git python3-pip
+git clone https://github.com/continuous-assurance/dashboard-flask
+cd dashboard-flask
+pip install -r requirements.txt
+cd server
+python3 app.py &
+```
+
