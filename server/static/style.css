@@ -15,11 +15,38 @@ body {
 /* Main Container */
 .app-container {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column; /* Stack divs vertically by default */
     gap: 20px;
     padding: 30px;
-    height: 100vh;
-    flex-wrap: wrap;
+    height: auto; /* Allow height to adjust */
+}
+
+/* Header */
+.header {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+    background-color: #ffffff;
+    padding: 20px 40px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-title {
+    font-size: 2.5em;
+    color: #444;
+    margin: 0;
+    font-weight: 600;
+}
+
+.header-description {
+    font-size: 1.1em;
+    color: #777;
+    margin: 0;
 }
 
 /* Sidebar */
@@ -30,7 +57,7 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 30px;
     position: sticky;
-    top: 30px;
+    top: 100px; /* Keep filters fixed below header */
     height: calc(100vh - 60px); /* Ensure it doesn't overlap header */
 }
 
@@ -68,50 +95,26 @@ body {
 
 /* Main Content */
 .main-content {
-    flex-grow: 1;
     display: flex;
     flex-direction: column;
     gap: 30px;
-    width: calc(100% - 320px); /* Adjust width to account for sidebar */
+    flex-grow: 1;
 }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #ffffff;
-    padding: 20px 40px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-
-.header-title {
-    font-size: 2.5em;
-    color: #444;
-    margin: 0;
-    font-weight: 600;
-}
-
-.header-description {
-    font-size: 1.1em;
-    color: #777;
-    margin: 0;
-}
-
-/* Graph Container for Overview and Sub-Graphs */
+/* Graph Container */
 .graph-container {
     display: flex;
     flex-direction: column; /* Stack items vertically */
-    gap: 20px; /* Add space between the overview graph and the sub-graphs */
+    gap: 20px;
     width: 100%;
 }
 
-/* Sub-Graphs Layout (Two Graphs Side by Side) */
+/* Sub-Graphs Layout */
 .sub-graphs-container {
     display: flex;
     flex-direction: row; /* Align the two graphs side by side */
-    justify-content: space-between; /* Evenly space the two graphs */
-    gap: 20px; /* Space between the two graphs */
+    justify-content: space-between;
+    gap: 20px;
     width: 100%;
 }
 
@@ -124,43 +127,69 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Overview Graph (Full-Width) */
 .overview-graph {
-    width: 100%; /* Ensure it spans the full width */
-    height: 400px; /* Set consistent height */
+    width: 100%; /* Full-width */
+    height: 400px; /* Consistent height */
 }
 
-/* Sub-Graphs (Each Takes Equal Space) */
 .sub-graph {
-    flex: 1; /* Equal space for both graphs */
-    height: 300px; /* Slightly shorter height than the overview graph */
+    flex: 1; /* Equal width for both graphs */
+    height: 300px; /* Slightly shorter height */
 }
 
-/* Header Spanning Full Width */
-.header {
-    position: sticky;
-    top: 0;
-    width: 100%;
-    z-index: 10; /* Ensure it stays on top */
+/* Table Container */
+
+.table-container {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 }
 
-.sidebar {
-    position: sticky;
-    top: 100px; /* Keep filters fixed below header */
+.dash-table-container .dash-spreadsheet-container {
+    height: 300px;
+    overflow-y: auto;
 }
 
 /* Responsive Styles */
+@media (min-width: 900px) {
+    .app-container {
+        flex-direction: row; /* Desktop layout: Sidebar and content side-by-side */
+        justify-content: space-between;
+        flex-wrap: nowrap; /* Prevent wrapping */
+        height: 100vh; /* Match viewport height */
+    }
+
+    .sidebar {
+        width: 280px;
+        position: sticky;
+    }
+
+    .main-content {
+        width: calc(100% - 320px); /* Adjust width to account for sidebar */
+    }
+
+    .sub-graphs-container {
+        flex-direction: row; /* Keep graphs side by side on desktop */
+    }
+
+    .sub-graph {
+        width: 48%; /* Adjust width for two graphs side by side */
+    }
+}
+
 @media (max-width: 900px) {
     .app-container {
-        flex-direction: column;
+        flex-direction: column; /* Stack everything */
         padding: 20px;
     }
 
     .sidebar {
         width: 100%;
         margin-bottom: 20px;
-        position: static;
-        height: auto;
+        position: static; /* Make it scroll with content */
+        height: auto; /* Adjust height */
     }
 
     .main-content {
@@ -172,50 +201,18 @@ body {
     }
 
     .graph {
-        width: 100%; /* Make the graph take full width on smaller screens */
+        width: 100%; /* Full-width on smaller screens */
     }
 
     .sub-graphs-container {
-        flex-direction: column; /* Stack the graphs vertically */
+        flex-direction: column; /* Stack graphs vertically */
     }
 
     .sub-graph {
-        width: 100%; /* Full width for stacked graphs */
+        width: 100%; /* Full-width */
     }
-}
 
-/* Table Container - Matching the style of graph containers */
-.table-container {
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Adding shadow to match graphs */
-    margin-bottom: 20px; /* Space between other content */
-}
-
-/* Dash Table Specific Styling */
-.dash-table-container {
-    background-color: #ffffff;  /* Same background as other elements */
-    border-radius: 8px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Matching box-shadow */
-}
-
-.dash-table-container .dash-spreadsheet {
-    font-size: 14px; /* Ensure table font size matches */
-}
-
-/* Table Height */
-.dash-table-container .dash-spreadsheet-container {
-    height: 300px; /* Match the height of the graphs */
-    overflow-y: auto; /* Add scroll if necessary */
-}
-
-/* Optional: Make table responsive like graphs */
-@media (max-width: 900px) {
     .dash-table-container .dash-spreadsheet {
-        width: 100%; /* Ensure it fits within smaller screens */
+        width: 100%; /* Full width on smaller screens */
     }
 }
-
