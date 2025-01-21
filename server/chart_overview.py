@@ -21,18 +21,17 @@ def generate_executive_overview_chart(RAG,df):
         .reset_index()
     )
 
-    result['green'] = result.apply(lambda row: row['score'] if row['score'] >= row['slo'] else 0, axis=1)
-    result['amber'] = result.apply(lambda row: row['score'] if row['slo_min'] <= row['score'] < row['slo'] else 0, axis=1)
-    result['red'] = result.apply(lambda row: row['score'] if row['score'] < row['slo_min'] else 0, axis=1)
+    result['rag'] = result.apply(lambda row: "red" if row['score'] < row['slo_min'] else "amber" if row['slo_min'] <= row['score'] < row['slo'] else "green", axis = 1)
 
     fig = px.bar(
-        result, x="datestamp", y=["red", "amber", "green"], barmode="stack",
+        result, x="datestamp", y="score",
+        color="rag",
         color_discrete_map={
             "red"  : RAG['red'][0],
             "amber": RAG['amber'][0],
             "green": RAG['green'][0]
         },
-        title="Executive Summary",
+        title="Executive Summary xxx",
         text_auto=True
     )
     fig.update_yaxes(range=[0, 1], tickformat=".0%", title=None)

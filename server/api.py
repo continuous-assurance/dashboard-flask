@@ -4,9 +4,9 @@ import os
 import yaml
 from io import StringIO
 import datetime
+from library import read_config
 
-with open("config.yml", "r") as f:
-    config = yaml.safe_load(f)
+config = read_config()
 
 api_blueprint = Blueprint('api', __name__)
 

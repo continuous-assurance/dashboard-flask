@@ -10,8 +10,8 @@ The app is built on Python 3.13.  Make sure you are running at least 3.x.  Some 
 
 **Clone the repo**
 
-* `git clone TODO`
-* `cd TODO`
+* `git clone https://github.com/continuous-assurance/dashboard-flask`
+* `cd dashboard-flask`
 
 **Install Python requirements**
 
@@ -24,6 +24,8 @@ The app is built on Python 3.13.  Make sure you are running at least 3.x.  Some 
 **Open the app**
 
 * http://localhost:8080
+
+Logon with the default credentials (`user` / `password123`)
 
 At this point, the dashboard would appear, but it will be completely empty.  Let's add a metric to it.
 
@@ -47,7 +49,7 @@ We will add some data.  We use a simple vulnerability management metric that ind
 Prepare a `csv` data blob of the data you'd like to ingest.  The following `curl` command can be used to simulate the loading of this data via API.
 
 ```bash
-    curl -X POST http://localhost:80/api \
+    curl -X POST http://localhost:8080/api \
     -H "Authorization: Bearer 6002920168C3253430A653E16AD36EE88F6E3C7D917A5F245F735D96ABDA67FE" \
     -H "Content-Type: text/csv" \
     --data-binary $'metric_id,resource,compliance,business_unit\nvm-99,ServerA,1,Sales\nvm-99,ServerB,0,Sales\nvm-99,ServerC,1,Sales\nvm-99,ServerD,1,Sales\nvm-99,ServerE,0,Marketing\nvm-99,ServerF,0,Marketing\nvm-99,ServerG,1,Marketing\nvm-99,ServerH,0,Marketing\nvm-99,ServerI,1,Marketing\nvm-99,ServerJ,1,Marketing\n'
@@ -126,6 +128,10 @@ Attribution is the process of assigning resources to a dimension, like a busines
 
 Dimensions can be customised.  Update the `config.yml` file with any additional dimensions you'd like to introduce in the schema.  Be sure to update your API calls to the dashboard to include the dimensions in your data load.
 
+### config.yml
+
+TODO
+
 ## Write a metric
 
 ### What is important?
@@ -138,6 +144,11 @@ TODO
 
 * The `compliance` field is a float, a percentage of compliance if you will.  That means that when you decide compliance for a particular resource, you could infact define _partial_ compliance.
 * To backup and restore, simply grab the `data` folder, and store that safely.  Upon recovery, install a fresh copy of the application, and restore the `data` folder.  Any customisation you may have made to the `config.yml` file also needs to be restored.
+* You can start the dashboard with a custom `config.yml` file by starting the `app.py` with the path to the new config, for example:
+
+```bash
+python app.py my_other_config.yml
+```
 
 ### AWS EC2 Instance
 

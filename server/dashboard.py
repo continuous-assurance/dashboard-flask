@@ -9,9 +9,9 @@ from chart_dimension import generate_executive_dimension_chart
 from chart_category import generate_executive_category_chart
 from chart_metrics import generate_executive_metrics_chart
 import hashlib
+from library import read_config
 
-with open("config.yml", "r") as f:
-    config = yaml.safe_load(f)
+config = read_config()
 
 filters = config['dimensions']
 RAG = config['RAG']
