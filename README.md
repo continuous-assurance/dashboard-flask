@@ -150,6 +150,6 @@ git clone https://github.com/continuous-assurance/dashboard-flask
 cd dashboard-flask
 pip install -r requirements.txt
 cd server
-python3 app.py &
+gunicorn -w 4 -b 0.0.0.0:8080 app:server &
 ```
 

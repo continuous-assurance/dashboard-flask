@@ -1,20 +1,20 @@
 import plotly.express as px
+import pandas as pd
 
 def generate_executive_dimension_chart(RAG,dimensions,df):
-
     q1 = (
-        df.groupby(['metric_id', next(iter(dimensions.keys())), 'weight'])
-        .agg(
-            score=('totalok', lambda x: x.sum() / df.loc[x.index, 'total'].sum()),
-            slo_min=('slo_min', 'mean'),
-            slo=('slo', 'mean'),
-        )
-        .reset_index()
+        df.groupby(['metric_id', next(iter(dimensions.keys())), 'weight'], as_index=False).apply(
+            lambda group: pd.Series({
+                'score': group['totalok'].sum() / group['total'].sum(),
+                'slo_min': group['slo_min'].mean(),
+                'slo': group['slo'].mean(),
+            })
+        ).reset_index()
     )
     result = (
         q1.groupby(next(iter(dimensions.keys())))
         .agg(
-            score=('score', lambda x: x.sum() / q1.loc[x.index, 'weight'].sum()),
+            score=('score', lambda x: (x * q1.loc[x.index, 'weight']).sum() / q1.loc[x.index, 'weight'].sum()),
             slo_min=('slo_min', 'mean'),
             slo=('slo', 'mean'),
         )
