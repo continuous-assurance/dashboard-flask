@@ -1,14 +1,15 @@
 from flask import Flask
 from api import api_blueprint
 from dashboard import create_dashboard
+import yaml
 
-# Initialize Flask server
 server = Flask(__name__)
+with open("config.yml", "r") as f:
+    config = yaml.safe_load(f)
+server.secret_key = config['secret_key']
 
-# Register API blueprint
 server.register_blueprint(api_blueprint)
 
-# Attach Dash application
 dash_app = create_dashboard(server)
 
 if __name__ == "__main__":

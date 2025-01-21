@@ -1,4 +1,5 @@
-from dash import Dash, html, dcc, Input, Output, dash_table
+from flask import flash, redirect, session, url_for, request, render_template, send_from_directory
+from dash import Dash, html, dcc, Input, Output
 import pandas as pd
 import plotly.express as px
 import yaml
@@ -7,6 +8,7 @@ from chart_overview import generate_executive_overview_chart
 from chart_dimension import generate_executive_dimension_chart
 from chart_category import generate_executive_category_chart
 from chart_metrics import generate_executive_metrics_chart
+import hashlib
 
 with open("config.yml", "r") as f:
     config = yaml.safe_load(f)
@@ -44,6 +46,7 @@ def create_dashboard(server):
         external_stylesheets=["/static/style.css"]
     )
 
+    # Load data
     data = load_summary()
     data_latest = data[data['datestamp'] == data['datestamp'].max()]
 
@@ -67,13 +70,14 @@ def create_dashboard(server):
         html.Div(className="main-content", children=[
             html.Div(className="header", children=[
                 html.H1("Continuous Assurance", className="header-title"),
-                html.P("Visualize data interactively with customizable filters.", className="header-description")
+                html.P("Visualize data interactively with customizable filters.", className="header-description"),
+                html.A("Logout", href="/logout", className="logout-link")  # Add a logout link
             ]),
             html.Div(className="graph-container", children=[
-                dcc.Graph(id="overview-graph", className="graph overview-graph",config={"displayModeBar": False}),  # Overview graph
+                dcc.Graph(id="overview-graph", className="graph overview-graph", config={"displayModeBar": False}),
                 html.Div(className="sub-graphs-container", children=[
-                    dcc.Graph(id="dimension-graph", className="graph sub-graph",config={"displayModeBar": False}),  # First sub-graph
-                    dcc.Graph(id="category-graph", className="graph sub-graph",config={"displayModeBar": False})   # Second sub-graph
+                    dcc.Graph(id="dimension-graph", className="graph sub-graph", config={"displayModeBar": False}),
+                    dcc.Graph(id="category-graph", className="graph sub-graph", config={"displayModeBar": False})
                 ])
             ]),
             html.Div(className="table-container", children=[
@@ -88,6 +92,37 @@ def create_dashboard(server):
     # Generate callback inputs dynamically
     dropdown_inputs = [Input(f"{column_name}-dropdown", "value") for column_name in filters.keys()]
 
+    @server.route('/favicon.ico')
+    def favicon():
+        return send_from_directory(app.static_folder, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+    @server.route('/login', methods=['GET', 'POST'])
+    def login():
+        if request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
+
+            # check if the username and password matches
+            if username in config['users'] and hashlib.sha256(password.encode()).hexdigest().lower() == config['users'].get(username,'').lower():
+                session['logged_in'] = True
+                return redirect(url_for('/'))
+            else:
+                flash('Invalid username or password.', 'error')
+
+        return render_template('login.html')
+
+    @server.route('/logout')
+    def logout():
+        session.pop('logged_in', None)
+        flash('You have been logged out.', 'info')
+        return redirect(url_for('login'))
+
+    @server.before_request
+    def require_login():
+        # Skip login check for static files and the login endpoint
+        if request.endpoint not in ('login', 'static','/favicon.ico') and not session.get('logged_in'):
+            return redirect(url_for('login'))
+
     # Callback to update the bar chart based on selected filters
     @app.callback(
         [Output("overview-graph", "figure"),
@@ -96,26 +131,24 @@ def create_dashboard(server):
          Output("metrics-table", "children")],
         dropdown_inputs
     )
-
     def update_charts(*selected_values):
         """Update bar charts based on selected filter values."""
         df_summary = load_summary()
 
         # Apply filtering dynamically based on selected values
         for selected_value, (column_name, _) in zip(selected_values, filters.items()):
-            if selected_value:  # Apply filter only if the selected_value is not None
+            if selected_value:
                 df_summary = df_summary[df_summary[column_name] == selected_value]
 
         df_summary['score'] = df_summary['totalok'] / df_summary['total'] * df_summary['weight']
 
-        # Find the latest summary data from the selected filters for the detailed graphs
         df_summary_latest = df_summary[df_summary['datestamp'] == df_summary['datestamp'].max()]
 
-        fig_overview = generate_executive_overview_chart(RAG,df_summary)                                # == Executive Overview
-        fig_dimension = generate_executive_dimension_chart(RAG,config['dimensions'],df_summary_latest)  # == Dimensional Chart
-        fig_category = generate_executive_category_chart(RAG,df_summary_latest)                         # == Category Chart
-        fig_metrics = generate_executive_metrics_chart(RAG,df_summary_latest)                           # == Metrics table
-        
+        fig_overview = generate_executive_overview_chart(RAG, df_summary)
+        fig_dimension = generate_executive_dimension_chart(RAG, config['dimensions'], df_summary_latest)
+        fig_category = generate_executive_category_chart(RAG, df_summary_latest)
+        fig_metrics = generate_executive_metrics_chart(RAG, df_summary_latest)
+
         return fig_overview, fig_dimension, fig_category, fig_metrics
 
     return app
